@@ -22,7 +22,7 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </GridPane.margin>
          <children>
-            <ImageView fx:id="upCoverImg" fitHeight="50.0" fitWidth="50.0" layoutX="153.0" layoutY="155.0" onMouseClicked="#handleFileUpload" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="upCoverImg" fitHeight="50.0" fitWidth="50.0" layoutX="153.0" layoutY="155.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/upload.png" />
                </image>
@@ -92,7 +92,7 @@
                <children>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="upFileButton" alignment="CENTER" layoutY="18.0" mnemonicParsing="false" onAction="#handleFileUpload" prefHeight="27.0" prefWidth="70.0" text="Choose" />
+                        <Button fx:id="upPayload" alignment="CENTER" layoutY="18.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="70.0" text="Choose" />
                      </children>
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">

@@ -6,6 +6,9 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private AppController controller;
+
+    private AppModel model;
     /**
      * Default Hello World GUI, this is our main where main calls are made, the actual main only calls launch(args).
      * @param primaryStage
@@ -13,11 +16,18 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("AppView.fxml"));
+        // An object to extract information from an XML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AppView.fxml"));
+        // Build a hierarchy of elements to traverse from the XML
+        Parent root = loader.load();
+        // Set the title of the window to be opened
         primaryStage.setTitle("Steganography Demo Tool");
+        // Build the scene from the elements described in the XML hierarchy
         primaryStage.setScene(new Scene(root));
+        // Display the scene
         primaryStage.show();
-        //AppController c = new AppController(new DummyHandler());
+        // Get an instance of the controller used to handle GUI interaction
+        controller = loader.getController();
     }
 
 
