@@ -26,6 +26,8 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         // Display the scene
         primaryStage.show();
+        // Set the focus to the root element to stop auto-selecting other elements
+        root.requestFocus();
         // Get an instance of the controller used to handle GUI interaction
         controller = loader.getController();
     }
