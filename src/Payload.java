@@ -13,6 +13,8 @@ public class Payload implements AppFileInterface {
 
     private File file;
 
+    private boolean set;
+
     public Payload() {
         bits = null;
         file = null;
@@ -22,10 +24,29 @@ public class Payload implements AppFileInterface {
         return bits;
     }
 
+    @Override
+    public boolean isSet() {
+        return set;
+    }
+
+    @Override
+    public boolean set(boolean set) {
+        return this.set = set;
+    }
+
+    @Override
+    public int getBitSize() {
+        if (bits == null)
+            return -1;
+        else
+            return bits.size();
+    }
+
     public File setFile(File file) {
         if (createBitSet(file) == null) {
             return this.file = null;
         } else {
+            set(true);
             return this.file = file;
         }
     }
