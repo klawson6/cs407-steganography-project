@@ -1,6 +1,9 @@
 import java.io.File;
 import java.util.BitSet;
 
+/**
+ * An interface for implementing different types of files for the Steganography tool.
+ */
 public interface AppFileInterface {
 
     public File setFile(File file);

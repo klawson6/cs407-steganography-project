@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -8,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #D6FFFB;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AppController">
+<GridPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FFE7D6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DecodeController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="205.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="396.0" minWidth="10.0" prefWidth="400.0" />
@@ -26,37 +27,33 @@
                <image>
                   <Image url="@img/upload.png" />
                </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </ImageView>
          </children>
       </Pane>
       <Pane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button fx:id="upPayload" layoutX="38.0" layoutY="209.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="128.0" style="-fx-background-color: #ABF0E9; -fx-border-style: solid; -fx-border-radius: 5; -fx-background-radius: 5;" text="Upload Payload" textAlignment="CENTER">
-               <font>
-                  <Font name="Avenir Roman" size="14.0" />
-               </font>
-            </Button>
-            <Label fx:id="fileChosen" alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="240.0" prefHeight="58.0" prefWidth="164.0" text="No File Chosen" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font name="Avenir Roman" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="CENTER" contentDisplay="CENTER" layoutY="28.0" prefHeight="30.0" prefWidth="204.0" text="Steganography" textAlignment="CENTER">
                <font>
                   <Font name="Avenir Roman" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="65.0" layoutY="58.0" text="Encoder">
+            <Label layoutX="63.0" layoutY="58.0" text="Decoder">
                <font>
                   <Font name="Avenir Roman" size="20.0" />
                </font>
             </Label>
-            <Button fx:id="genSteg" alignment="CENTER" contentDisplay="CENTER" layoutX="38.0" layoutY="298.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="128.0" style="-fx-background-color: #ABF0E9; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-style: solid;" text="Generate Steganograph" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="decodeSteg" alignment="CENTER" contentDisplay="CENTER" layoutX="38.0" layoutY="262.0" mnemonicParsing="false" prefHeight="93.0" prefWidth="128.0" style="-fx-background-color: #FFC69C; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-style: solid;" text="Decode Cover Image" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font name="Avenir Roman" size="14.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
-            <Pane fx:id="switchMode" layoutX="77.0" layoutY="105.0" prefHeight="78.0" prefWidth="50.0" style="-fx-background-color: #ABF0E9; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-style: solid; -fx-border-width: 1;">
+            <Pane id="switchMode" fx:id="switchMode" layoutX="77.0" layoutY="105.0" prefHeight="78.0" prefWidth="50.0" style="-fx-background-color: #FFC69C; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-style: solid; -fx-border-width: 1;">
                <children>
                   <ImageView fx:id="switchImg" fitHeight="78.0" fitWidth="50.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -74,7 +71,15 @@
                      </font>
                   </Label>
                </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Pane>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="38.0" layoutY="200.0" prefHeight="50.0" prefWidth="128.0" text="No Cover Image Chosen" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="Avenir Roman" size="14.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>
