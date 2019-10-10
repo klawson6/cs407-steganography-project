@@ -3,9 +3,11 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
  * The model to decode a payload in a cover image.
@@ -49,5 +51,6 @@ public class DecodeModel {
      */
     public void decodeSteganograph() {
         // TODO add in the Steganograph generation @FinFin
+        new Alert(INFORMATION, "Payload decoded from the cover image!\nSaved to project directory as [a file name here].").show();
     }
 }

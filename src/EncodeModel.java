@@ -3,9 +3,10 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.*;
 
 /**
  * The model to encode a payload in a cover image.
@@ -91,6 +92,13 @@ public class EncodeModel {
      */
     public void encodeSteganograph() {
         if (!checkCompatibility()) return;
-        // TODO add in the Steganograph generation @ChloChlo
+        // TODO add in the Steganograph generation @ChloChlo, modify the original image, below saves to separate file.
+        // A way to save to new file, can be added to, removed, modified whatevs. just had this for testing.
+        try {
+            new FileOutputStream("encoded_" + coverImg.getFile().getName()).write(new FileInputStream(coverImg.getFile()).readAllBytes());
+            new Alert(INFORMATION, "Payload encoded successfully in the cover image!\nSaved to project directory as " + "encoded_" + coverImg.getFile().getName()).show();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

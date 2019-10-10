@@ -6,6 +6,8 @@ import java.util.BitSet;
  */
 public interface AppFileInterface {
 
+    public File getFile();
+
     public File setFile(File file);
 
     public BitSet getBitSet();

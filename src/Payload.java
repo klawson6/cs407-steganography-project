@@ -75,6 +75,11 @@ public class Payload implements AppFileInterface {
         }
     }
 
+    @Override
+    public File getFile() {
+        return file;
+    }
+
     /**
      * Creates a BitSet from the file given.
      * @param file

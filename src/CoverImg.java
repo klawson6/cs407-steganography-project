@@ -62,6 +62,11 @@ public class CoverImg implements AppFileInterface {
         }
     }
 
+    @Override
+    public File getFile() {
+        return file;
+    }
+
     /**
      * Sets the file for the cover image, if the file is successfully processed into a BitSet
      * @param file
