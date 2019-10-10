@@ -1,6 +1,8 @@
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -9,8 +11,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static javafx.scene.control.Alert.AlertType.ERROR;
+
 /**
  * The controller to handle user input for the encode GUI
  */
@@ -31,6 +38,9 @@ public class DecodeController implements Initializable {
 
     @FXML
     private Button decodeSteg;
+
+    @FXML
+    private Label imgText;
 
     // The model to handle steganography decoding
     private DecodeModel model;
@@ -85,18 +95,25 @@ public class DecodeController implements Initializable {
     /**
      * Displays the chosen image on the GUI for the cover image.
      * Resizes nicely, took bloomin ages to get, pls don't touch xoxo
-     * @param img
+     * @param f
      */
-    public void setCoverImg(Image img) {
-        upCoverImg.setImage(img);
-        if (img.getHeight() > img.getWidth()) {
-            upCoverImg.setFitHeight(coverContainer.getHeight());
-            upCoverImg.setFitWidth(-1);
-            upCoverImg.relocate((coverContainer.getWidth() / 2) - (img.getWidth() / img.getHeight() * upCoverImg.getFitHeight() / 2), 0);
-        } else {
-            upCoverImg.setFitWidth(coverContainer.getWidth());
-            upCoverImg.setFitHeight(-1);
-            upCoverImg.relocate(0, (coverContainer.getHeight() / 2) - (img.getHeight() / img.getWidth() * upCoverImg.getFitWidth() / 2));
+    public void setCoverImg(File f) {
+        try {
+            Image img = new Image(new FileInputStream(f));
+            upCoverImg.setImage(img);
+            if (img.getHeight() > img.getWidth()) {
+                upCoverImg.setFitHeight(coverContainer.getHeight());
+                upCoverImg.setFitWidth(-1);
+                upCoverImg.relocate((coverContainer.getWidth() / 2) - (img.getWidth() / img.getHeight() * upCoverImg.getFitHeight() / 2), 0);
+            } else {
+                upCoverImg.setFitWidth(coverContainer.getWidth());
+                upCoverImg.setFitHeight(-1);
+                upCoverImg.relocate(0, (coverContainer.getHeight() / 2) - (img.getHeight() / img.getWidth() * upCoverImg.getFitWidth() / 2));
+            }
+            imgText.setText(f.getName());
+        } catch (IOException e){
+            e.printStackTrace();
+            new Alert(ERROR, "An error occurred displaying the cover image.");
         }
     }
 

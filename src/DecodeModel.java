@@ -20,6 +20,7 @@ public class DecodeModel {
     /**
      * Initialises the model when the controller calls this.
      * Creates instances of a cover image, as well as a reference to the decode controller.
+     *
      * @param controller
      */
     protected void setController(DecodeController controller) {
@@ -29,6 +30,7 @@ public class DecodeModel {
 
     /**
      * Checks and sets a passed file as the cover image.
+     *
      * @param f
      */
     public void stageCoverImg(File f) {
@@ -39,13 +41,7 @@ public class DecodeModel {
             new Alert(ERROR, "The cover image is not a 24 bit .bmp or .dib file. Please select another file.").show();
             return;
         }
-        try {
-            // Display the cover image in the encode GUI
-            decodeController.setCoverImg(new Image(new FileInputStream(f)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            new Alert(ERROR, "The cover image is not a 24 bit .bmp or .dib file. Please select another file.").show();
-        }
+        decodeController.setCoverImg(f);
     }
 
     /**

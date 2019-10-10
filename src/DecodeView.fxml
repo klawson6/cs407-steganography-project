@@ -75,7 +75,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="38.0" layoutY="200.0" prefHeight="50.0" prefWidth="128.0" text="No Cover Image Chosen" textAlignment="CENTER" wrapText="true">
+            <Label fx:id="imgText" alignment="CENTER" contentDisplay="CENTER" layoutX="38.0" layoutY="200.0" prefHeight="50.0" prefWidth="128.0" text="No Cover Image Chosen" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font name="Avenir Roman" size="14.0" />
                </font>
