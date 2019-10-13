@@ -1,10 +1,12 @@
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -51,6 +53,52 @@ public class DecodeModel {
      */
     public void decodeSteganograph() {
         // TODO add in the Steganograph generation @FinFin
-        new Alert(INFORMATION, "Payload decoded from the cover image!\nSaved to project directory as [a file name here].").show();
+        if(!coverImg.isSet()){
+            new Alert(INFORMATION, "Decoding failed, no image supplied");
+            return;
+        }
+        byte[] payload = coverImg.getBitSet().toByteArray();
+        payload = Arrays.copyOfRange(payload, 56, payload.length);
+
+
+        int lengthnum = ByteBuffer.wrap(extractBytes(Arrays.copyOfRange(payload, 0, 8))).getInt();
+        if(lengthnum < 0) {
+            new Alert(INFORMATION, "Payload decoding failed. Decoded length was < 0");
+            return;
+        }
+
+        if(lengthnum > (payload.length - 16)){
+            new Alert(INFORMATION, "Payload decoding failed. Decoded length was greater than the size of the file");
+            return;
+        }
+
+        byte[] extension = extractBytes(Arrays.copyOfRange(payload, 8, 24));
+
+        String extensionType = new String(extension);
+        String filename = "decoded." + extensionType;
+        payload = extractBytes(Arrays.copyOfRange(payload, 24, lengthnum));
+
+        try{
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            fileOutputStream.write(payload);
+        } catch (FileNotFoundException e) {
+            new Alert(INFORMATION, "File Not Found Exception occured");
+        } catch (IOException e) {
+            new Alert(INFORMATION, "IO Exception occured");
+        } finally {
+            new Alert(INFORMATION, "Payload decoded from the cover image!\nSaved to project directory as filename").show();
+        }
     }
+
+
+    private byte[] extractBytes(byte[] bytes){
+        byte[] returnByteArray = new byte[bytes.length/2];
+        for(int i = 0; i < bytes.length; i+=2){
+            returnByteArray[i/2] = (byte) ((byte) (bytes[i] << 4) + (bytes[i+1] & 0x0F)) ;
+        }
+        return returnByteArray;
+    }
+
+
+
 }
