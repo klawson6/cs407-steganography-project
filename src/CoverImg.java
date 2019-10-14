@@ -58,7 +58,7 @@ public class CoverImg implements AppFileInterface {
         if (bits == null)
             return -1;
         else {
-            return (bits.size()-528);
+            return (bits.size()-822);
         }
     }
 
