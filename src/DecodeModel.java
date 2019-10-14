@@ -2,6 +2,7 @@ import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import static javafx.scene.control.Alert.AlertType.ERROR;
@@ -54,8 +55,10 @@ public class DecodeModel {
             new Alert(INFORMATION, "Decoding failed, no image supplied");
             return;
         }
+
+
         byte[] payload = coverImg.getBitSet().toByteArray();
-        payload = Arrays.copyOfRange(payload, 56, payload.length);
+        payload = Arrays.copyOfRange(payload, 54, payload.length);
 
 
         int lengthnum = ByteBuffer.wrap(extractBytes(Arrays.copyOfRange(payload, 0, 32))).getInt();
@@ -69,11 +72,12 @@ public class DecodeModel {
             return;
         }
 
-        byte[] extension = extractBytes(Arrays.copyOfRange(payload, 32, 98));
+        byte[] extension = extractBytes(Arrays.copyOfRange(payload, 32, 96));
 
         String extensionType = new String(extension);
         String filename = "decoded." + extensionType;
-        payload = extractBytes(Arrays.copyOfRange(payload, 98, lengthnum));
+        //String filename = "decoded.mp3";
+        payload = extractBytes(Arrays.copyOfRange(payload, 96, lengthnum+96));
 
         try{
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
@@ -94,7 +98,8 @@ public class DecodeModel {
         for(int i = 0; i < bytes.length; i+=8){
             byte newByte = 0;
             for(int j =0; j < 8; j++){
-                newByte = (byte) (newByte + ((bytes[i+j] << (7-j) & (int) Math.pow(2, (7-j)))));
+                //newByte = (byte) (newByte + ((bytes[i+j] << (7-j) & (int) Math.pow(2, (7-j)))));
+                newByte = (byte) (newByte + ((bytes[i+j] & 0x1) << (7-j)));
             }
             returnByteArray[i/8] = newByte ;
         }
