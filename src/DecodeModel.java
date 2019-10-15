@@ -2,7 +2,6 @@ import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.util.Arrays;
 
 import static javafx.scene.control.Alert.AlertType.ERROR;
@@ -57,7 +56,7 @@ public class DecodeModel {
         }
 
 
-        byte[] payload = coverImg.getBitSet().toByteArray();
+        byte[] payload = coverImg.getByteArray();
         payload = Arrays.copyOfRange(payload, 54, payload.length);
 
 

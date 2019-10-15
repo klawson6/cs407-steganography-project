@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.BitSet;
 
 import static javafx.scene.control.Alert.AlertType.*;
 
@@ -83,12 +81,12 @@ public class EncodeModel {
      * @return
      */
     private boolean checkCompatibility() {
-        System.out.println("Payload size: " + payload.getBitSize());
-        System.out.println("Cover Image: " + coverImg.getBitSize());
+        System.out.println("Payload size: " + payload.getByteArraySize());
+        System.out.println("Cover Image: " + coverImg.getByteArraySize());
         // Check if both files have been selected
         if (!(payload.isSet() && coverImg.isSet())) return false;
         // Check if there is space for the payload in the cover image
-        if (payload.getBitSize() > coverImg.getBitSize()/8) {
+        if (payload.getByteArraySize() > coverImg.getByteArraySize()/8) {
             new Alert(ERROR, "The payload file is too large to be hidden in the cover image. Please select a smaller payload file or a larger cover image.").show();
             return false;
         }
@@ -97,21 +95,23 @@ public class EncodeModel {
 
     /**
      * Encodes the size, extension and data of the payload into the cover image.
+     * @param
+     * @return
      */
     public void encodeSteganograph() {
         if (!checkCompatibility()) return;
 
         try {
             // Getting byte array of original cover image for encoding.
-            byte[] newCover = coverImg.getBitSet().toByteArray();
+            byte[] newCover = coverImg.getByteArray();
 
             // Create a byte array, of size 32 bits, of the length of the payload
-            byte[] payloadLength = ByteBuffer.allocate(4).putInt(payload.getBitSize()).array();
+            byte[] payloadLength = ByteBuffer.allocate(4).putInt(payload.getByteArraySize()*8).array();
 
             // Encodes payload length into cover image
             encodeLSB(newCover, payloadLength, HEADER_SIZE, HEADER_SIZE + PL_LENGTH_SIZE);
 
-            // Creating a bitSet of the payload's file extension
+            // Creating a byte array of the payload's file extension
             String ext = payload.getFile().getName().substring(payload.getFile().getName().lastIndexOf('.') + 1);
             byte[] byteExt = new byte[8];
             System.arraycopy(ext.getBytes(), 0, byteExt, 8-ext.getBytes().length, ext.getBytes().length);
@@ -120,7 +120,7 @@ public class EncodeModel {
             encodeLSB(newCover, byteExt, HEADER_SIZE + PL_LENGTH_SIZE, HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE);
 
             // Encodes payload into cover image. If there is no more payload to encode, the remaining cover image bits are  left untouched.
-            encodeLSB(newCover, payload.getBitSet().toByteArray(), HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE,  HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE + payload.getBitSize());
+            encodeLSB(newCover, payload.getByteArray(), HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE,  HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE + payload.getByteArraySize()*8);
 
             new FileOutputStream("encoded_" + coverImg.getFile().getName()).write(newCover);
             new Alert(INFORMATION, "Payload encoded successfully in the cover image!\nSaved to project directory as " + "encoded_" + coverImg.getFile().getName()).show();
@@ -129,8 +129,14 @@ public class EncodeModel {
         }
     }
 
-    /*
+
+    /**
      * Replaces least significant bit of each byte in cover image data with the item you wish to encode
+     * @param cover
+     * @param itemToEncode
+     * @param startIndex
+     * @param endIndexPlusOne
+     * @return
      */
     private void encodeLSB(byte[] cover, byte[] itemToEncode, int startIndex, int endIndexPlusOne){
         int count = 0;

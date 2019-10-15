@@ -3,7 +3,6 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.BitSet;
 
 import static javafx.scene.control.Alert.AlertType.ERROR;
 
@@ -11,8 +10,8 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
  * An implementation of AppFileInterface for cover image files for encoding.
  */
 public class CoverImg implements AppFileInterface {
-    // A reference to the BitSet of the cover image
-    private BitSet bits;
+    // A reference to the byte array of the cover image
+    private byte[] bits;
     // A reference to the cover image file
     private File file;
     // A flag to indicate if the cover image file has been set
@@ -25,9 +24,9 @@ public class CoverImg implements AppFileInterface {
     }
 
     /**
-     * Classic getter for the BitSet of the cover image
+     * Classic getter for the byte array of the cover image
      */
-    public BitSet getBitSet() {
+    public byte[] getByteArray() {
         return bits;
     }
 
@@ -50,15 +49,15 @@ public class CoverImg implements AppFileInterface {
     }
 
     /**
-     * Classic getter for getting the BitSet size
+     * Classic getter for getting the byte array size
      * @return
      */
     @Override
-    public int getBitSize() {
+    public int getByteArraySize() {
         if (bits == null)
             return -1;
         else {
-            return (bits.size()-822);
+            return (bits.length-103);   //TODO change to correct byte equivalent
         }
     }
 
@@ -68,13 +67,13 @@ public class CoverImg implements AppFileInterface {
     }
 
     /**
-     * Sets the file for the cover image, if the file is successfully processed into a BitSet
+     * Sets the file for the cover image, if the file is successfully processed into a byte array
      * @param file
      * @return
      */
     public File setFile(File file) {
         if (verifyImage(file)) {
-            createBitSet(file);
+            createByteArray(file);
             set(true);
             return this.file = file;
         } else
@@ -105,15 +104,15 @@ public class CoverImg implements AppFileInterface {
     }
 
     /**
-     * Creates a BitSet from the file given.
+     * Creates a byte array from the file given.
      * @param file
      * @return
      */
-    private void createBitSet(File file) {
+    private void createByteArray(File file) {
         try {
             FileInputStream in = new FileInputStream(file);
-            bits = BitSet.valueOf(in.readAllBytes());
-            System.out.println("Bits read in for " + file.getName());
+            bits = in.readAllBytes();
+            System.out.println("Bytes read in for " + file.getName());
         } catch (IOException e) {
             e.printStackTrace();
             new Alert(ERROR, "File could not be read. Please select another file.");
