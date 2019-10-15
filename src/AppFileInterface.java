@@ -10,9 +10,9 @@ public interface AppFileInterface {
 
     public File setFile(File file);
 
-    public BitSet getBitSet();
+    public byte[] getByteArray();
 
-    public int getBitSize();
+    public int getByteArraySize();
 
     public boolean isSet();
 
