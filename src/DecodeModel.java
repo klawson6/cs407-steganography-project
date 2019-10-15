@@ -62,6 +62,7 @@ public class DecodeModel {
 
 
         int lengthnum = ByteBuffer.wrap(extractBytes(Arrays.copyOfRange(payload, 0, 32))).getInt();
+        System.out.println("Payload length: " + lengthnum);
         if (lengthnum < 0) {
             new Alert(ERROR, "Payload decoding failed. Decoded length was < 0").show();
             return;
@@ -75,6 +76,7 @@ public class DecodeModel {
         byte[] extension = extractBytes(Arrays.copyOfRange(payload, 32, 96));
 
         String extensionType = new String(extension);
+        extensionType = extensionType.trim();
         String filename = "decoded." + extensionType;
         //String filename = "decoded.mp3";
         payload = extractBytes(Arrays.copyOfRange(payload, 96, lengthnum + 96));
@@ -83,9 +85,9 @@ public class DecodeModel {
             fileOutputStream.write(payload);
             new Alert(INFORMATION, "Payload successfully decoded to the project directory as " + filename + ".").show();
         } catch (FileNotFoundException e) {
-            new Alert(ERROR, "File Not Found Exception occured").show();
+            new Alert(ERROR, "File Not Found Exception occurred").show();
         } catch (IOException e) {
-            new Alert(ERROR, "IO Exception occured").show();
+            new Alert(ERROR, "IO Exception occurred").show();
         }
     }
 

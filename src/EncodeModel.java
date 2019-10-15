@@ -24,9 +24,9 @@ public class EncodeModel {
     // A reference to the cover image object
     private AppFileInterface coverImg;
     // Size of header (in bits)
-    static final int HEADER_SIZE = 54*8;
-    static final int PL_LENGTH_SIZE = 32*8;
-    static final int EXT_SIZE = 64*8;
+    static final int HEADER_SIZE = 54;
+    static final int PL_LENGTH_SIZE = 32;
+    static final int EXT_SIZE = 64;
 
 
     /**
@@ -96,53 +96,72 @@ public class EncodeModel {
     }
 
     /**
-     * Will do the encoding, huzzah!
+     * Encodes the size, extension and data of the payload into the cover image.
      */
     public void encodeSteganograph() {
         if (!checkCompatibility()) return;
-        // TODO add in the Steganograph generation @ChloChlo, modify the original image, below saves to separate file.
+
         try {
-            // Getting BitSet of original cover image for encoding.
-            BitSet bitCoverImg = coverImg.getBitSet();
-            // Create a BitSet, of size 32 bits, of the length of the payload
-            BitSet payloadLength = BitSet.valueOf(ByteBuffer.allocate(4).putInt(payload.getBitSize()).array());
-            //TODO check if null
+            // Getting byte array of original cover image for encoding.
+            byte[] newCover = coverImg.getBitSet().toByteArray();
+
+            // Create a byte array, of size 32 bits, of the length of the payload
+            byte[] payloadLength = ByteBuffer.allocate(4).putInt(payload.getBitSize()).array();
 
             // Encodes payload length into cover image
-            encodeLSB(bitCoverImg, payloadLength, HEADER_SIZE + 7, HEADER_SIZE + PL_LENGTH_SIZE);
-            //System.out.println("Old size: " + coverImg.getBitSize() + " vs new size 1: " + bitCoverImg.size());
+            encodeLSB(newCover, payloadLength, HEADER_SIZE, HEADER_SIZE + PL_LENGTH_SIZE);
 
             // Creating a bitSet of the payload's file extension
             String ext = payload.getFile().getName().substring(payload.getFile().getName().lastIndexOf('.') + 1);
-            System.out.println("Extension: " + ext);
-            byte[] byteExt = ext.getBytes();
-            BitSet bsExt = BitSet.valueOf(byteExt);
-            // Padding out extension BitSet to 64 bits
-            bsExt.or(new BitSet(64));  // TODO add length check
-            System.out.println("Ext length: " + bsExt.size());
+            byte[] byteExt = new byte[8];
+            System.arraycopy(ext.getBytes(), 0, byteExt, 8-ext.getBytes().length, ext.getBytes().length);
 
             // Encodes payload's file extension into cover image
-            encodeLSB(bitCoverImg, bsExt, HEADER_SIZE + PL_LENGTH_SIZE + 7, HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE);
-            //System.out.println("Old size: " + coverImg.getBitSize() + " vs new size 2: " + bitCoverImg.size());
+            encodeLSB(newCover, byteExt, HEADER_SIZE + PL_LENGTH_SIZE, HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE);
 
             // Encodes payload into cover image. If there is no more payload to encode, the remaining cover image bits are  left untouched.
-            encodeLSB(bitCoverImg, payload.getBitSet(), HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE + 7,  HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE + 8*payload.getBitSize());
+            encodeLSB(newCover, payload.getBitSet().toByteArray(), HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE,  HEADER_SIZE + PL_LENGTH_SIZE + EXT_SIZE + payload.getBitSize());
 
-            //System.out.println("Old size: " + coverImg.getBitSize() + " vs new size: " + bitCoverImg.size());
-
-            new FileOutputStream("encoded_" + coverImg.getFile().getName()).write(bitCoverImg.toByteArray());
+            new FileOutputStream("encoded_" + coverImg.getFile().getName()).write(newCover);
             new Alert(INFORMATION, "Payload encoded successfully in the cover image!\nSaved to project directory as " + "encoded_" + coverImg.getFile().getName()).show();
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    private void encodeLSB(BitSet cover, BitSet itemToEncode, int startIndex, int endIndexPlusOne){
+    /*
+     * Replaces least significant bit of each byte in cover image data with the item you wish to encode
+     */
+    private void encodeLSB(byte[] cover, byte[] itemToEncode, int startIndex, int endIndexPlusOne){
         int count = 0;
-        for (int i = startIndex; i < endIndexPlusOne; i+=5){
-            //Replaces 4 LSBs in each colour of each pixel with the bits representing payload size
-            cover.set(i, itemToEncode.get(count));
-            //Counts how many bits we've encoded
+
+        //Replaces LSB in each colour of each pixel with the bits to be encoded
+        for (int i = startIndex; i < endIndexPlusOne; i++){
+            // Check we're not encoding past the limit
+            if (count >= itemToEncode.length){
+                break;
+            }
+
+            for (int j = 0; j < 8; j++) {
+                if (i >= endIndexPlusOne){
+                    break;
+                }
+                // Determines whether bit to be encoded is 0 or 1
+                byte b = (byte) ((byte) (itemToEncode[count] >> (7 - j)) & 0x1);
+                // Encodes if bit is 1
+                if (b == 0x1) {
+                    cover[i] = (byte) (cover[i] | b);
+                }
+                // Encodes if bit is 0
+                else{
+                    cover[i] = (byte) (cover[i] & ~0x1);
+                }
+                if (j != 7) {
+                    i++;
+                }
+            }
+
+            //Counts how many bytes we've encoded
             count++;
         }
     }
